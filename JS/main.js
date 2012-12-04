@@ -30,6 +30,14 @@ App.V.Station = Backbone.View.extend({
 	render: function (){
 		this.$el.html(this.model.get('title'));
 		return this;
+	},
+
+	events: {
+   		"click": "open"
+  	},
+
+	open: function () {
+		console.log(this.model.get('zone'));
 	}
 
 });
