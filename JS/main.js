@@ -22,7 +22,7 @@ App.C.Branch = Backbone.Collection.extend({
 });
 
 App.V.Branch = Backbone.View.extend({
-	tagName: 'ul',
+	tagName: 'div',
 
 	template: template('branch_template'),
 
@@ -37,7 +37,7 @@ App.V.Branch = Backbone.View.extend({
 });
 
 App.V.Station = Backbone.View.extend({
-	tagName: 'li',
+	tagName: 'div',
 
 	template: template('station_template'),
 
@@ -114,12 +114,10 @@ var long_beach = new App.C.Branch([
 ]);
 
 
+var addStationView = new App.V.addStation
+
 var long_beach_V = new App.V.Branch({collection: long_beach});
-// long_beach_V.render();
-
-// var babylon_V = new App.V.Branch({collection: long_beach});
-// babylon_V.render();
-
+long_beach_V.render();
 $('.branches').html(long_beach_V.el );
 
 
