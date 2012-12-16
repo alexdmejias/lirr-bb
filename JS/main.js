@@ -1,11 +1,21 @@
 (function () {
-window. App = {
+    window. App = {
 	M: {},
 	V: {},
 	C: {}
 }
 
-App.M.Station = Backbone.Model.extend({});
+window.template = function (id){
+	return _.template( $('#' + id).html() );
+}
+
+App.M.Station = Backbone.Model.extend({
+	validate: function (attrs) {
+		if (! $trim(attrs.title)) {
+			return 'A station name is required'
+		}
+	}
+});
 
 App.C.Branch = Backbone.Collection.extend({
 	model: App.M.Station
@@ -13,6 +23,8 @@ App.C.Branch = Backbone.Collection.extend({
 
 App.V.Branch = Backbone.View.extend({
 	tagName: 'ul',
+
+	template: template('branch_template'),
 
 	render: function (){
 		this.collection.each(this.addOne, this);
@@ -27,33 +39,90 @@ App.V.Branch = Backbone.View.extend({
 App.V.Station = Backbone.View.extend({
 	tagName: 'li',
 
-	render: function (){
-		this.$el.html(this.model.get('title'));
-		return this;
+	template: template('station_template'),
+
+	initialize: function(){
+		this.model.on('change', this.render, this);
+		this.model.on('destroy', this.remove, this);
 	},
 
 	events: {
-   		"click": "open"
+   		'click .edit' : 'editStation',
+   		'click .remove' : 'destroy'
   	},
 
-	open: function () {
-		console.log(this.model.get('zone'));
-	}
+	editStation: function() {
+		var newStationTitle = prompt('rename to:', this.model.get('name'));
+		if ( !newStationTitle ) return;
+		this.model.set('name', newStationTitle);
+	},
 
+	destroy: function() {
+		this.model.destroy();
+	},
+
+	remove: function() {
+		this.remove();
+	},
+
+	render: function(){
+		var template = this.template( this.model.toJSON() );
+		this.$el.html(template);
+		return this;
+	}
 });
 
-var stations = new App.C.Branch([
+App.V.addStation = Backbone.View.extend({
+	el: '#add-task',
+
+	initialize: function () {
+	},
+
+	events: {
+		'submit' : 'submit'
+	},
+
+	submit: function(e){
+		e.preventDefault();
+
+		var newStationTitle = $(e.currentTarget).find('input[type=text').val();
+
+		var task = new App.M.Station({ name: newStationTitle})
+
+	}
+});
+
+
+
+var long_beach = new App.C.Branch([
 	{
-		title: 'oside',
+		name: 'oside',
 		zone: 1
 	},
 	{
-		title: 'lyn',
+		name: 'lyn',
+		zone: 3
+	},
+	{
+		name: 'east rockway',
+		zone: 3
+	},
+	{
+		name: 'long beach',
 		zone: 3
 	}
 ]);
 
-var branchView = new App.V.Branch({collection: stations});
-branchView.render();
-$(document.body).html(branchView.el);
+
+var long_beach_V = new App.V.Branch({collection: long_beach});
+// long_beach_V.render();
+
+// var babylon_V = new App.V.Branch({collection: long_beach});
+// babylon_V.render();
+
+$('.branches').html(long_beach_V.el );
+
+
+
+
 }) (); // end shell

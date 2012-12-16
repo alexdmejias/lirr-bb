@@ -6,8 +6,19 @@
 </head>
 <body>
 	<h1>stations</h1>
-	<script type="text/template" id="branch template">
-		<strong><%=name %></strong>(<%=zone %>)
+	<form id="add-task" action="">
+		<input type="text">
+		<input type="submit" value="add task">
+	</form>
+	<div class="branches">
+		<script type="text/template" id="station_template">
+			<%= name %> (<%= zone %>) <button class="edit">Edit</button><button class="remove">Delete</button>
+		</script>
+
+	</div>
+
+	<script type="text/template" id="branch_template">
+		<div><%=branch %></div>
 	</script>
 
 	<script type="text/javascript" src="JS/underscore-min.js"></script>
